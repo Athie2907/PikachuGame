@@ -61,7 +61,7 @@ namespace Pikachu
             this.btnDangNhap.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDangNhap.Location = new System.Drawing.Point(243, 210);
             this.btnDangNhap.Name = "btnDangNhap";
-            this.btnDangNhap.Size += new System.Drawing.Size(117, 36);
+            this.btnDangNhap.Size = new System.Drawing.Size(117, 36);
             this.btnDangNhap.TabIndex = 2;
             this.btnDangNhap.Text = "Đăng Nhập";
             this.btnDangNhap.UseVisualStyleBackColor = true;
