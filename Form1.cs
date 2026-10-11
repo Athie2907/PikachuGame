@@ -24,12 +24,25 @@ namespace Pikachu
         PictureBox selected1 = null;
         PictureBox selected2 = null;
         bool isProcessing = false;
-        public Form1()
+
+        private int score = 0;
+        private int timeLeft = 300;
+        private Timer countdownTimer; 
+        public Form1(string currentUsername)
         {
             InitializeComponent();
             LoadConGiapImage();
             Initializeboard();
+
+
+
+            countdownTimer =  new System.Windows.Forms.Timer();
+            countdownTimer.Interval = 1000; 
+            countdownTimer.Tick += CountdownTimer_Tick;
+            countdownTimer.Start();
         }
+
+        
         private void LoadConGiapImage()
         {
             // Load the Pikachu image from the resources
@@ -65,7 +78,7 @@ namespace Pikachu
             for(int i = 0; i < congiapIndexes.Count; i++)
             {
                 int j = random.Next(i, congiapIndexes.Count);
-                int temp = congiapIndexes[j];
+                int temp = congiapIndexes[i];
                 congiapIndexes[i] = congiapIndexes[j];
                 congiapIndexes[j] = temp;
             }
@@ -158,9 +171,14 @@ namespace Pikachu
                         selected1 = null;
                         selected2 = null;
 
+                        score += 10;
+                        diem.Text = "Điểm: " + score;
                         if (IsBoardCleaned())
                         {
-                            MessageBox.Show("You Win!");
+                            MessageBox.Show("Chúc mừng bạn đã chiến thắng!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Initializeboard(); // Hoặc khởi động lại màn chơi mới
+                            score = 0;
+                            diem.Text = "Điểm: 0";
                         }
                     }
                     else
@@ -283,6 +301,38 @@ namespace Pikachu
                 }
             }
             return true;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            diem.Text = "Điểm: " + score;
+            Time.Text = "Thời gian: " + timeLeft;
+
+            diemkyluc.Text = "Điểm Kỷ Lục: 0";
+        }
+
+        private void diemkyluc_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Điểm hiện tại: " + score);
+        }
+
+        
+        private void CountdownTimer_Tick(object sender, EventArgs e)
+        {
+            timeLeft--;
+            Time.Text = "Thời gian: " + timeLeft;
+
+            if (timeLeft <= 0)
+            {
+                countdownTimer.Stop();
+
+                MessageBox.Show(
+                    "Hết thời gian! Điểm của bạn: " + score,
+                    "Thông báo",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+            }
         }
     }
 }
