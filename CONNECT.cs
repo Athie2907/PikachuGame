@@ -10,7 +10,7 @@ namespace Pikachu
 {
     public class CONNECT
     {
-        private static string ConnectionString = "Data Source=(localdb)\\ProjectModels;Initial Catalog=GamePikachu;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False";
+        private static string ConnectionString = "Data Source=(localdb)\\ProjectModels;Initial Catalog=GamePikachu;Integrated Security=True;Connect Timeout=30;Encrypt=False";
 
         public static SqlConnection GetConnection()
         {

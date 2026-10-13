@@ -18,61 +18,72 @@ namespace Pikachu
         {
             InitializeComponent();
         }
-
-        private void btnDangNhap_Click(object sender, EventArgs e)
+        private void btnDangNhap_Click (object sender, EventArgs e)
         {
-            FormLogin formLogin = new FormLogin();
-            formLogin.ShowDialog();
+            this.Close();
         }
-
         private void btnDangKy_Click(object sender, EventArgs e)
         {
             string username = tbDangKy.Text.Trim();
 
             if (string.IsNullOrEmpty(username))
             {
-                MessageBox.Show("Vui lòng nhập tên đăng ký.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng nhập tên đăng ký.",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            using (SqlConnection connection = CONNECT.GetConnection())
+            try
             {
-                connection.Open();
-
-                // Kiểm tra xem tên đăng ký đã tồn tại trong CSDL chưa
-                string checkQuery = "SELECT * FROM Users WHERE UserName = @UserName";
-                using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
+                using (SqlConnection connection = CONNECT.GetConnection())
                 {
-                    checkCommand.Parameters.AddWithValue("@UserName", username);
-                    using (SqlDataReader reader = checkCommand.ExecuteReader())
+                    connection.Open();
+
+                    string checkQuery = "SELECT * FROM [dbo].[Table] WHERE UserName = @UserName";
+
+                    using (SqlCommand checkCommand = new SqlCommand(checkQuery, connection))
                     {
-                        if (reader.HasRows)
+                        checkCommand.Parameters.AddWithValue("@UserName", username);
+
+                        using (SqlDataReader reader = checkCommand.ExecuteReader())
                         {
-                            // Nếu có dòng dữ liệu -> Tên đã tồn tại -> Báo lỗi
-                            MessageBox.Show("Tên đăng ký đã tồn tại. Vui lòng chọn tên khác.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
+                            if (reader.HasRows)
+                            {
+                                MessageBox.Show("Tên đăng ký đã tồn tại. Vui lòng chọn tên khác.",
+                                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                    }
+
+                    string insertQuery = "INSERT INTO [dbo].[Table] (UserName) VALUES (@UserName)";
+
+                    using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
+                    {
+                        insertCommand.Parameters.AddWithValue("@UserName", username);
+
+                        int rowsAffected = insertCommand.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
+                        {
+                            MessageBox.Show("Đăng ký thành công!",
+                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            this.DialogResult = DialogResult.OK;
+                            this.Close();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Đăng ký thất bại. Vui lòng thử lại.",
+                                "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
-
-               //Nếu chưa tồn tại -> Thực hiện thêm tài khoản mới vào CSDL
-                string insertQuery = "INSERT INTO Users (UserName) VALUES (@UserName)";
-                using (SqlCommand insertCommand = new SqlCommand(insertQuery, connection))
-                {
-                    insertCommand.Parameters.AddWithValue("@UserName", username);
-                    int rowsAffected = insertCommand.ExecuteNonQuery();
-
-                    if (rowsAffected > 0)
-                    {
-                        MessageBox.Show("Đăng ký thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.DialogResult = DialogResult.OK;
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Đăng ký thất bại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi khi đăng ký: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

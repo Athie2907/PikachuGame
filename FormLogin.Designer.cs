@@ -89,19 +89,25 @@ namespace Pikachu
             this.Controls.Add(this.DangNhap);
             this.Name = "FormLogin";
             this.Text = "FormDK";
+            this.Load += new System.EventHandler(this.FormLogin_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
+        private void FormLogin_Load(object sender, EventArgs e)
+        {
+            
+        }
+
         private void DangNhap_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void tbDangNhap_TextChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         #endregion

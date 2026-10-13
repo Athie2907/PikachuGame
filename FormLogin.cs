@@ -13,41 +13,71 @@ namespace Pikachu
 {
     public partial class FormLogin : Form
     {
+        public FormLogin()
+        {
+            InitializeComponent();
+        }
+
         public string UserName { get; set; }
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
             string userName = tbDangNhap.Text.Trim();
-            using (SqlConnection connection = CONNECT.GetConnection())
+
+            if (string.IsNullOrEmpty(userName))
             {
-                connection.Open();
-                string query = "SELECT * FROM Users WHERE UserName = @UserName";
-                using (SqlCommand command = new SqlCommand(query, connection))
+                MessageBox.Show("Vui lòng nhập tên đăng nhập.",
+                    "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                using (SqlConnection connection = CONNECT.GetConnection())
                 {
-                    command.Parameters.AddWithValue("@UserName", userName);
-                    using (SqlDataReader reader = command.ExecuteReader())
+                    connection.Open();
+
+                    string query = "SELECT COUNT(*) FROM [dbo].[Table] WHERE UserName = @UserName";
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        if (reader.HasRows)
+                        command.Parameters.AddWithValue("@UserName", userName);
+
+                        int count = (int)command.ExecuteScalar();
+
+                        if (count > 0)
                         {
                             UserName = userName;
-                            // User exists, proceed to the main form
-                            this.DialogResult = DialogResult.OK;
-                            this.Close();
+
+                            Form1 game = new Form1(UserName);
+                            this.Hide();
+                            game.ShowDialog();
+                            this.Show();
                         }
                         else
                         {
-                            // User does not exist, show an error message
-                            MessageBox.Show("Tên đăng nhập không tồn tại. Vui lòng thử lại.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(
+                                "Tên đăng nhập không tồn tại. Vui lòng đăng ký trước.",
+                                "Lỗi",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi khi đăng nhập: " + ex.Message,
+                    "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnDangKy_Click(object sender, EventArgs e)
         {
-            FormSignin formsignin = new FormSignin();
-            formsignin.ShowDialog();
+            using (FormSignin formsignin = new FormSignin())
+            {
+                formsignin.ShowDialog();
+            }
         }
     }
 }

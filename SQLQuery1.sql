@@ -1,0 +1,7 @@
+﻿CREATE TABLE dbo.PlayerScores
+(
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    UserName NVARCHAR(50) NOT NULL,
+    Score INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);

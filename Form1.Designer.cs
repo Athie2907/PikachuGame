@@ -37,7 +37,10 @@ namespace Pikachu
             this.diem = new System.Windows.Forms.Label();
             this.diemkyluc = new System.Windows.Forms.Label();
             this.panelMiddle = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.panelOverPlay = new System.Windows.Forms.Panel();
             this.panelBoard.SuspendLayout();
+            this.panelMiddle.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelBoard
@@ -63,6 +66,7 @@ namespace Pikachu
             this.bxh.TabIndex = 4;
             this.bxh.Text = "Bảng Xếp Hạng";
             this.bxh.UseVisualStyleBackColor = true;
+            this.bxh.Click += new System.EventHandler(this.btnBXH_Click);
             // 
             // choilai
             // 
@@ -74,6 +78,7 @@ namespace Pikachu
             this.choilai.TabIndex = 3;
             this.choilai.Text = "Chơi Lại";
             this.choilai.UseVisualStyleBackColor = true;
+            this.choilai.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // Time
             // 
@@ -112,11 +117,27 @@ namespace Pikachu
             // 
             // panelMiddle
             // 
+            this.panelMiddle.Controls.Add(this.flowLayoutPanel1);
             this.panelMiddle.Location = new System.Drawing.Point(7, 151);
             this.panelMiddle.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelMiddle.Name = "panelMiddle";
             this.panelMiddle.Size = new System.Drawing.Size(885, 468);
             this.panelMiddle.TabIndex = 1;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(778, 74);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(8, 8);
+            this.flowLayoutPanel1.TabIndex = 1;
+            // 
+            // panelOverPlay
+            // 
+            this.panelOverPlay.Location = new System.Drawing.Point(12, 143);
+            this.panelOverPlay.Name = "panelOverPlay";
+            this.panelOverPlay.Size = new System.Drawing.Size(16, 10);
+            this.panelOverPlay.TabIndex = 0;
+            this.panelOverPlay.Paint += new System.Windows.Forms.PaintEventHandler(this.panelOverPlay_Paint);
             // 
             // Form1
             // 
@@ -124,13 +145,16 @@ namespace Pikachu
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(900, 634);
             this.Controls.Add(this.panelMiddle);
+            this.Controls.Add(this.panelOverPlay);
             this.Controls.Add(this.panelBoard);
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panelBoard.ResumeLayout(false);
             this.panelBoard.PerformLayout();
+            this.panelMiddle.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -146,6 +170,8 @@ namespace Pikachu
         private System.Windows.Forms.Label diem;
         private System.Windows.Forms.Label diemkyluc;
         private System.Windows.Forms.Panel panelMiddle;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Panel panelOverPlay;
     }
 }
 
