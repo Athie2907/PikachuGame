@@ -13,26 +13,6 @@ using System.Windows.Forms;
 
 namespace Pikachu
 {
-    public class PanelVeDuongNoi : Panel
-    {
-        public PanelVeDuongNoi()
-        {
-            SetStyle(
-                System.Windows.Forms.ControlStyles.UserPaint |
-                System.Windows.Forms.ControlStyles.AllPaintingInWmPaint |
-                System.Windows.Forms.ControlStyles.OptimizedDoubleBuffer |
-                System.Windows.Forms.ControlStyles.SupportsTransparentBackColor,
-                true
-            );
-
-            BackColor = Color.Transparent;
-        }
-
-        protected override void OnPaintBackground(PaintEventArgs e)
-        {
-            // Không tô nền để nhìn thấy bàn cờ bên dưới.
-        }
-    }
     public partial class Form1 : Form
     {
         int rows = 9;
@@ -54,22 +34,11 @@ namespace Pikachu
         private int score = 0;
         private int timeLeft = 300;
         private Timer countdownTimer;
-        PanelVeDuongNoi panelVeDuongNoi;
         public Form1(string currentUsername)
         {
             userName = currentUsername;
             InitializeComponent();
-
-            panelVeDuongNoi = new PanelVeDuongNoi();
-
-            panelVeDuongNoi.Location = panelMiddle.Location;
-            panelVeDuongNoi.Size = panelMiddle.Size;
-
-            panelVeDuongNoi.Paint += panelVeDuongNoi_Paint;
-
-            this.Controls.Add(panelVeDuongNoi);
-            panelVeDuongNoi.BringToFront();
-
+            connectionPoints = new List<Point>();
             LoadConGiapImage();
             Initializeboard();
 
@@ -79,13 +48,9 @@ namespace Pikachu
             countdownTimer.Interval = 1000;
             countdownTimer.Tick += CountdownTimer_Tick;
             countdownTimer.Start();
-            connectionPoints = new List<Point>();
+           
         }
 
-        private void panelVeDuongNoi_Paint(object sender, PaintEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
 
         private void LoadConGiapImage()
         {
@@ -204,19 +169,9 @@ namespace Pikachu
                     var path = ConnectStraight(pos1, pos2) ?? ConnectL(pos1, pos2) ?? Connect3Line(pos1, pos2);
                     if (path != null)
                     {
-                        connectionPoints = path.Select(p =>
-                        {
-                            Point viTri = new Point(
-                                p.Y * tileSize + tileSize / 2,
-                                p.X * tileSize + tileSize / 2
-                            );
+                        connectionPoints = path.Select(p => new Point(p.Y * tileSize + tileSize / 2,p.X * tileSize + tileSize / 2)).ToList();
 
-                            return panelBoard.PointToClient(
-                                panelMiddle.PointToScreen(viTri)
-                            );
-                        }).ToList();
-
-                        panelBoard.Invalidate();
+                        panelMiddle.Invalidate();
 
                         boardMap[pos1.X, pos1.Y] = -1;
                         boardMap[pos2.X, pos2.Y] = -1;
@@ -564,24 +519,6 @@ namespace Pikachu
             }
         }
         private void panelOverPlay_Paint(object sender, PaintEventArgs e)
-        {
-            if (connectionPoints != null && connectionPoints.Count > 1)
-            {
-                using (Pen redPen = new Pen(Color.Red, 3))
-                {
-                    for (int i = 0; i < connectionPoints.Count - 1; i++)
-                    {
-                        e.Graphics.DrawLine(
-                            redPen,
-                            connectionPoints[i],
-                            connectionPoints[i + 1]
-                        );
-                    }
-                }
-            }
-
-        }
-        private void panelVeDuongNoi_Paint(object sender, PaintEventArgs e)
         {
             if (connectionPoints == null || connectionPoints.Count < 2)
                 return;
